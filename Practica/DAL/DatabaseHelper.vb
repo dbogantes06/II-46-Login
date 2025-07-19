@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 
 Public Class DatabaseHelper
-    Private ReadOnly connectionString As String = ConfigurationManager.ConnectionStrings("UsuariosDBConnectionString").ConnectionString
+    Private ReadOnly connectionString As String = ConfigurationManager.ConnectionStrings("Login").ConnectionString
 
     Public Sub New()
         EnsureErrorLogTableExists() ' Asegúrate de que la tabla exista al crear una instancia.

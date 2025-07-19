@@ -11,19 +11,23 @@ Public Class Login
         Try
             Dim helper As New DatabaseHelper()
             Dim parametros As New List(Of SqlParameter) From {
-              New SqlParameter("@Email", email),
-              New SqlParameter("@Password", password)
-          }
+            New SqlParameter("@Email", email),
+            New SqlParameter("@Password", password)
+        }
             ' Ejecutar la consulta para verificar el usuario
-            Dim dataTable As DataTable = helper.ExecuteQuery("SELECT * FROM Usuarios WHERE EMAIL = @Email AND CONTRASEÑA = @Password", parametros)
+            Dim query As String = "SELECT * FROM Usuarios WHERE EMAIL = @Email AND CONTRASEÑA = @Password;"
+            Dim dataTable As DataTable = helper.ExecuteQuery(query, parametros)
+            Dim usuario As New Usuario()
 
             ' Verificar si se encontró el usuario
             If dataTable.Rows.Count > 0 Then
                 ' Usuario encontrado, puedes redirigir o realizar otra acción
-                Session.Add("UsuarioId", dataTable.Rows(0)("Id").ToString())
-                Session.Add("UsuarioNombre", dataTable.Rows(0)("Nombre").ToString())
-                Session.Add("UsuarioApellido", dataTable.Rows(0)("Apellido").ToString())
-                Session.Add("UsuarioEmail", dataTable.Rows(0)("Email").ToString())
+                usuario = usuario.dtToUsuario(dataTable)
+                Session.Add("UsuarioId", usuario.Id.ToString())
+                Session.Add("UsuarioNombre", usuario.Nombre.ToString())
+                Session.Add("UsuarioApellido", usuario.Apellido.ToString())
+                Session.Add("UsuarioEmail", usuario.Email.ToString())
+                Return True
             Else
                 ' Usuario no encontrado, manejar el error
                 Return False
@@ -34,6 +38,8 @@ Public Class Login
             Return False
         End Try
     End Function
+
+
     Protected Sub btnLogin_Click(sender As Object, e As EventArgs)
 
         Dim email As String = txtEmail.Text
